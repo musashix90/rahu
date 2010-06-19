@@ -1,0 +1,10 @@
+rahu is designed to offer some protection for your network.
+
+Be sure to take a look at the rahu.conf.example file for help configuring, and
+write the configuration to rahu.conf
+
+If you're upgrading, be sure to check diff -y rahu.conf.example rahu.conf
+to see if there have been configuration changes!
+
+Currently supported protocols:
+     Unreal32   Unreal 3.2.1+ supported

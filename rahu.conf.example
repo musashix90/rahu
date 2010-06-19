@@ -1,0 +1,47 @@
+# This is the settings file for rahu
+
+# serveraddr is the setting for where you wish to have rahu connect to.
+# Default: localhost
+serveraddr = localhost
+
+# serverport is the port you want rahu to connect to.
+# Default: 7000
+serverport = 7000
+
+# protocol sets the protocol to use when communicating to your IRCd.
+# Default: none -- set it yourself!
+protocol =
+
+# linkname is the setting for rahu's link name.
+# Default: rahu.example.com
+linkname = rahu.example.com
+
+# linkdesc is the description for the server which rahu introduces to your network.
+# Default: rahu IRC Protection 2000(R)(C)TM
+linkdesc = rahu IRC Protection 2000(R)(C)TM
+
+# linkuuid is the numeric which some IRCds require to link.  Try to make it unique to the network.
+# Not all IRCd protocols use uuids, so it's best to check with your local IRCd representative.
+# Default: 2
+linkuuid = 2
+
+# linkpass is configured for the outgoing password which the IRCd
+# may consider "incoming" or "receiving".
+# Default: none -- set it yourself!
+linkpass = LiNk
+
+# debugchan is the channel which rahu will dump debug messages and alerts to.
+# You might want to have this channel out of reach from normal users.
+debugchan = #diagnostics
+
+# botnick is the nickname for the services bot.
+# Default: rahu
+botnick = rahu
+
+# bothost is the hostname for the services bot.  BOTNICK!BOTNICK@BOTHOST
+# Default: rahu.int
+bothost = rahu.int
+
+# botgecos is the realname or GECOS of the services bot.
+# Default: rahu
+botgecos = rahu
