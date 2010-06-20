@@ -20,7 +20,7 @@ sub find_protocol {
 
 sub ircsend {
 	my ($msg) = @_;
-	print $main::sock $msg."\n";
+	print $main::sock $msg."\r\n";
 	print "> $msg\n";
 }
 
