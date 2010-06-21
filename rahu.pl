@@ -25,7 +25,7 @@ if (rahu_conf_modules ne "undef" || rahu_conf_modules ne "") {
 	my @modules = split(/\s?\,\s?/, rahu_conf_modules);
 
 	foreach my $module (@modules) {
-		print $module."\n";
+		print "Loading module $module\n";
 		require "Rahu/Module/". find_module($module);
 	}
 }
