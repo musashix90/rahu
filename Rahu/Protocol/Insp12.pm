@@ -28,10 +28,10 @@ sub irc_parse {
 	elsif ($msg =~ /^:(.*) PING (.*) (.*)$/) {
 		ircsend(":$3 PONG $3 $1");
 	}
-	elsif ($msg =~ /^:(.*) FJOIN (.*) (.*) (.*) (.*)$/) {
-		if ($2 eq rahu_conf_debugchan && $is_in_debugchan == 0) {
-			ircsend(":@{[rahu_conf_linkuuid]} FJOIN @{[rahu_conf_debugchan]} $3 $4 :,$botuuid");
-			ircsend(":@{[rahu_conf_linkuuid]} FMODE @{[rahu_conf_debugchan]} $3 +o $botuuid");
+	elsif ($msg =~ /^:(\S+) FJOIN (\S+) (\d+) (.*) :(.*)$/) {
+		if (lc $2 eq lc rahu_conf_debugchan && $is_in_debugchan == 0) {
+			ircsend(":@{[rahu_conf_linkuuid]} FJOIN $2 $3 $4 :,$botuuid");
+			ircsend(":@{[rahu_conf_linkuuid]} FMODE $2 $3 +o $botuuid");
 			$is_in_debugchan++;
 			in_debugchan(1);
 		}
