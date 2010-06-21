@@ -35,6 +35,8 @@ our $sock = IO::Socket::INET->new(PeerAddr => rahu_conf_serveraddr,
                                  Proto    => 'tcp') or print "[".scalar localtime()."] Unable to connect\n";
 my $lastconn = time();
 
+daemonize();
+
 # oh how this has UGLY written all over it
 while (1) {
 	if (!defined($sock)) {
@@ -56,4 +58,14 @@ while (1) {
 		undef $sock;
 		next;
 	}
+}
+
+sub daemonize() {
+	close STDIN;
+	close STDOUT;
+	close STDERR;
+	open(STDIN, '>', '/dev/null');
+	open(STDOUT, '>', '/dev/null');
+	open(STDERR,  '>', '/dev/null');
+	if(fork()) { exit(0) }
 }
