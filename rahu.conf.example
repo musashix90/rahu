@@ -10,7 +10,7 @@ serverport = 7000
 
 # protocol sets the protocol to use when communicating to your IRCd.
 # Default: none -- set it yourself!
-protocol =
+protocol = undef
 
 # linkname is the setting for rahu's link name.
 # Default: rahu.example.com
@@ -45,3 +45,7 @@ bothost = rahu.int
 # botgecos is the realname or GECOS of the services bot.
 # Default: rahu
 botgecos = rahu
+
+# modules is the list of modules, separated by commas, that you wish to load.
+# Default: none -- take a look at the README file for a list of modules
+modules = undef

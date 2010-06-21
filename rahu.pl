@@ -13,12 +13,22 @@ chdir PREFIX;
 use lib PREFIX;
 
 use Rahu::Conf qw(rahu);
-use Rahu::Util qw(find_protocol);
+use Rahu::Util qw(find_protocol find_module);
 
+die "It seems you haven't set a protocol to link yet!" if rahu_conf_protocol eq "undef" || rahu_conf_protocol eq "";
 my $protocol = "Rahu::Protocol::".find_protocol(rahu_conf_protocol);
 $protocol =~ s/\.pm$//;
 
 require "Rahu/Protocol/". find_protocol(rahu_conf_protocol);
+
+if (rahu_conf_modules ne "undef" || rahu_conf_modules ne "") {
+	my @modules = split(/\s?\,\s?/, rahu_conf_modules);
+
+	foreach my $module (@modules) {
+		print $module."\n";
+		require "Rahu/Module/". find_module($module);
+	}
+}
 
 our $sock = IO::Socket::INET->new(PeerAddr => rahu_conf_serveraddr,
                                  PeerPort => rahu_conf_serverport,
