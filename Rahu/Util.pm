@@ -5,16 +5,24 @@ use Exporter 'import';
 use Cwd qw(getcwd);
 
 BEGIN {
-	our @EXPORT = qw(find_protocol ircsend find_module addhandler handle_event in_debugchan);
+	our @EXPORT = qw(find_protocol ircsend find_module addhandler handle_event in_debugchan debug);
 }
 
 my @handles;
 my @buffer;
 my $in_debugchan = 0;
+my %users;
 
 sub addhandler {
 	my ($event, $sub) = @_;
 	push @handles, { event => $event, cmd => $sub };
+}
+
+sub debug {
+	my ($msg) = @_;
+	if (defined $main::debug) {
+		print "[".scalar localtime()."] $msg\n";
+	}
 }
 
 sub find_protocol {
@@ -55,7 +63,7 @@ sub in_debugchan {
 	if ($result == 1) {
 		for (@buffer) {
 			print $main::sock $_->{'msg'}."\r\n";
-			print "> ".$_->{'msg'}."\n";
+			debug("> ".$_->{'msg'});
 		}
 	}
 }
@@ -66,7 +74,7 @@ sub ircsend {
 		push @buffer, { msg => $msg };
 	} else {
 		print $main::sock $msg."\r\n";
-		print "> $msg\n";
+		debug("> $msg");
 	}
 }
 
