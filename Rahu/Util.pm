@@ -10,6 +10,7 @@ BEGIN {
 
 my @handles;
 my @buffer;
+my @timers;
 my $in_debugchan = 0;
 my %users;
 

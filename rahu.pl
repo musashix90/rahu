@@ -58,7 +58,7 @@ daemonize() if !defined $debug;
 # oh how this has UGLY written all over it
 while (1) {
 	if (!defined($sock)) {
-		if ((time - $lastconn) >= 5) {
+		if ((time - $lastconn) >= 15) {
 			debug("[".scalar localtime()."] Attempting to reconnect...");
 			$sock = IO::Socket::INET->new(PeerAddr => rahu_conf_serveraddr,
                                  PeerPort => rahu_conf_serverport,

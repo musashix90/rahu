@@ -15,7 +15,12 @@ sub init_link {
 sub irc_parse {
 	my ($caller, $msg) = @_;
 	debug("< $msg");
-	if ($msg =~ /^:(\S+) FJOIN (\S+) (\d+) (.*) :(.*)$/) {
+	if ($msg =~ /:(\S+) FHOST (.*)$/) {
+		my ($tgt, $newhost) = ($1, $2);
+		handle_event("SETHOST", $botuuid, $user{$1}{nick}, $user{$1}{ident}, $user{$1}{virthost}, $newhost);
+		$user{$tgt}{virthost} = $newhost;
+	}
+	elsif ($msg =~ /^:(\S+) FJOIN (\S+) (\d+) (.*) :(.*)$/) {
 		if (lc $2 eq lc rahu_conf_debugchan && $is_in_debugchan == 0) {
 			ircsend(":@{[rahu_conf_linkuuid]} FJOIN $2 $3 $4 :,$botuuid");
 			ircsend(":@{[rahu_conf_linkuuid]} FMODE $2 $3 +o $botuuid");
@@ -39,6 +44,7 @@ sub irc_parse {
 	}
 	elsif ($msg =~ /^:(.*) PING (.*) (.*)$/) {
 		ircsend(":$3 PONG $3 $1");
+		handle_event("PING");
 	}
 	elsif ($msg =~ /^:(\S+) QUIT :(.*)$/) {
 		handle_event("QUIT", $botuuid, $user{$1}{nick}, $user{$1}{ident}, $user{$1}{host}, $user{$1}{gecos}, $user{$1}{server}, $2);
@@ -61,6 +67,7 @@ sub irc_parse {
 		my ($src, $uid, $ts, $nick, $host, $cloakedhost, $ident, $ip, $signon, $modes, $gecos) = ($1, $2, $3, $4, $5, $6, $7, $8, $9, $10, $11);
 		$user{$uid}{nick} = $nick;
 		$user{$uid}{host} = $host;
+		$user{$uid}{virthost} = $cloakedhost;
 		$user{$uid}{ident} = $ident;
 		$user{$uid}{gecos} = $gecos;
 		$user{$uid}{server} = $server{$src}{name};

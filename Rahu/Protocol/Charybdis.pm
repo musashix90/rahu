@@ -25,11 +25,18 @@ sub irc_parse {
 		ircsend(":@{[rahu_conf_linkuuid]} EUID @{[rahu_conf_botnick]} 1 @{[time]} +ioS @{[rahu_conf_botnick]} @{[rahu_conf_bothost]} 0 $botuuid * * :@{[rahu_conf_botnick]}");
 		$user{$botuuid}{nick} = rahu_conf_botnick;
 	}
+	elsif ($msg =~ /^:(\S+) CHGHOST (\S+) (\S+)$/) {
+		my ($src, $tgt, $host) = ($1, $2, $3);
+		handle_event("CHGHOST", rahu_conf_botnick, (defined($server{$src}{name}) ? $server{$src}{name} : $user{$src}{nick}), $tgt, $user{$tgt}{ident}, $user{$tgt}{virthost}, $host);
+		$user{$tgt}{virthost} = $host;
+	}
 	elsif ($msg =~ /^:(.*) EUID (.*) (.*) (.*) (.*) (.*) (.*) (.*) (.*) (.*) (.*) :(.*)$/) {
+		# :42X EUID MusashiX90 1 1277585278 +ailoswz ~nano hathor.thex90.org 192.168.0.100 42XAAAAAC * * :mwt
 		my ($src, $nick, $hops, $ts, $modes, $ident, $host, $ip, $uuid, $realhost, $account, $gecos) = ($1, $2, $3, $4, $5, $6, $7, $8, $9, $10, $11, $12);
-		handle_event("CONNECT", rahu_conf_botnick, $nick, $ident, $host, $gecos, $server{$src}{name});
+		handle_event("CONNECT", rahu_conf_botnick, $nick, $ident, ($realhost eq "*" ? $host : $realhost), $gecos, $server{$src}{name});
 		$user{$uuid}{nick} = $nick;
-		$user{$uuid}{host} = $host;
+		$user{$uuid}{host} = ($realhost eq "*" ? $host : $realhost);
+		$user{$uuid}{virthost} = $host;
 		$user{$uuid}{ident} = $ident;
 		$user{$uuid}{gecos} = $gecos;
 		$user{$uuid}{server} = $server{$src}{name};
