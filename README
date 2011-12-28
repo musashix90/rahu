@@ -8,3 +8,8 @@ to see if there have been configuration changes!
 
 Currently supported protocols:
      Unreal32   Unreal 3.2.1+ supported
+
+Currently supported modules:
+    AntiFakeLag        A service to aid in allowing certain users the fakelag exemption (only supports Unreal!)
+    ConnectionNotice   This will spam the diag channel with connection notices, making certain server notice masks obsolete
+    CTCPVersion        Spams the diag channel with version replies from users
