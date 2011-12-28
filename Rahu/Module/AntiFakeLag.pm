@@ -15,7 +15,8 @@ sub lookup {
 	$query->execute();
 	while (my ($fullhost) = $query->fetchrow_array) {
 		if ("$nick\!$ident\@$host" =~ /^$fullhost$/) {
-			ircsend(":$botnick PRIVMSG #diagnostics :$nick matches an antifakelag entry.");
+			$fullhost =~ s/\\S\+/\*/g;
+			ircsend(":$botnick PRIVMSG @{[rahu_conf_debugchan]} :$nick\!$ident\@$host matches an antifakelag entry ($fullhost)");
 			ircsend("SVS2NOLAG + $nick");
 		}
 	}
@@ -28,16 +29,35 @@ sub privmsg {
 		if ($msg =~ /^nofakelag add (.+)$/) {
 			my $host = $1;
 			my $orighost = $host;
-			$host =~ s/\*/\.\*/g;
+			$host =~ s/\*/\\S\+/g;
 			my $query = $dbh->prepare("INSERT INTO users(fullhost, active) VALUES (?, 1)");
 			$query->execute($host);
-			ircsend(":$botnick NOTICE $src :Added $orighost to the no fakelag service");
+			ircsend(":$botnick NOTICE $src :Added $orighost to the antifakelag service");
+			ircsend(":$botnick PRIVMSG @{[rahu_conf_debugchan]} :$src added $orighost to the antifakelag service");
 		}
-		if ($msg =~ /^nofakelag list$/) {
+		elsif ($msg =~ /^nofakelag del (.+)$/) {
+			my $host = $1;
+			my $orighost = $host;
+			$host =~ s/\*/\\S\+/g;
+			my $query = $dbh->prepare("SELECT count(id) FROM users WHERE fullhost = ?");
+			$query->execute($host);
+			my $count = $query->fetchrow_array();
+			if ($count > 0) {
+				my $query = $dbh->prepare("DELETE FROM users WHERE fullhost = ?");
+				$query->execute($host);
+				ircsend(":$botnick NOTICE $src :Deleted $orighost from antifakelag service");
+				ircsend(":$botnick PRIVMSG @{[rahu_conf_debugchan]} :$src deleted $orighost from antifakelag service");
+			} else {
+				ircsend(":$botnick NOTICE $src :No matches were found");
+			}
+		}
+		elsif ($msg =~ /^nofakelag list$/) {
+			ircsend(":$botnick NOTICE $src :Listing anti fakelag entries:");
 			my $query = $dbh->prepare("SELECT * FROM users");
 			$query->execute();
 			while (my ($id, $fullhost, $active) = $query->fetchrow_array) {
-				ircsend(":$botnick NOTICE $src :$id -- $fullhost -- $active");
+				$fullhost =~ s/\\S\+/\*/g;
+				ircsend(":$botnick NOTICE $src :  $fullhost");
 			}
 		}
 	}
